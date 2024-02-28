@@ -4,8 +4,14 @@ import ir_datasets
 from datamaestro import prepare_dataset
 import snippet_extraction as snippet
 
+os.system("pip install spacy")
+os.system("python -m spacy download en_core_web_sm")
+os.system("pip install nlp")
+
 os.system("cls")
 dataset = ir_datasets.load("antique")
+
+# ---------------------------------------loading database--->>>
 
 documents=[]
 try:
@@ -28,8 +34,6 @@ for query in dataset.queries_iter():
     with open('./queries/'+ str(i) , 'w') as f:
             f.write(query[1])
         
-
-
 # ----------------------------------------------------------------->>>>>>>>>
 
 # And we have a query

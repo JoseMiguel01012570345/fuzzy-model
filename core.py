@@ -1,2 +1,2 @@
-import tok as tokenicer
+import tok as token
 
