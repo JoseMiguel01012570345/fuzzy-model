@@ -2,5 +2,14 @@ import core
 
 class suggestion:
     
-    def __init__( self, query):
+    miu_query_per_doc=[]
+    
+    def __init__( self, query: list , miu_matrix: core ):
+        
+        
+        
+        
+        
         pass
+    
+    

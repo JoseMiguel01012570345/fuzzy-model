@@ -1,10 +1,9 @@
 import tok as token
 import os
 
-os.system("cls")
 class core:
      
-    matrix=[] 
+    miu_matrix=[] 
     
     def __init__(self , docs):
         
@@ -13,16 +12,41 @@ class core:
         for doc in docs:
             tok=token.Tok(doc)
             doc_tokenized.append(tok.doc_tokenized)
-        
-        Matrix = self.correlaction_matrix(doc_tokenized)
-        
-        self.matrix = Matrix
+            
+        list_words = self.list_words(doc_tokenized)
+        cij        = self.correlaction_matrix(doc_tokenized,list_words)
+    
+        self.miu(cij,list_words,doc_tokenized)
         
         pass
     
-    def correlaction_matrix(self , doc_tokenized ): # matrix correlaction
+    def miu( self , cij , list_words , database ):
         
-        list_words=self.list_words(doc_tokenized)
+        miu_matrix=[]
+        
+        for index , word in enumerate(list_words,start=0):
+        
+            row=[]
+            for doc in database:
+            
+                for token in doc:
+                    
+                    pi_miu=1
+                    for index1 , word in enumerate(list_words,start=0):
+            
+                        if  token.count(word) >=1 :
+                            
+                            pi_miu *= 1 - cij[index][index1][2]     
+                
+                row.append( 1 - pi_miu )            
+            
+            print(row)
+            miu_matrix.append        
+                
+        pass
+    
+    def correlaction_matrix(self , doc_tokenized ,list_words): # matrix correlaction
+        
         ni=self.ni(doc_tokenized,list_words)
         ni_l=self.ni_nl(doc_tokenized,list_words,ni)
         
@@ -153,4 +177,10 @@ class core:
                 ni_nl.append([ list_words[word],list_words[word2],frecuency])
 
         return ni_nl  
-        
+
+os.system("cls")
+
+docs = [ "A B C" , "A B" , "A X" , "A Q" , "D F" , "B X" ]
+
+cor=core(docs)
+

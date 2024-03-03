@@ -35,4 +35,5 @@ for query in dataset.queries_iter():
     with open('./queries/'+ str(i) , 'w') as f:
             f.write(query[1])
             query_test.append(query[1])  
-        
+
+# ___________________________________________________________________________________
