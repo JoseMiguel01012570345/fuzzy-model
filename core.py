@@ -13,6 +13,7 @@ class core:
             tok=token.Tok(doc)
             doc_tokenized.append(tok.doc_tokenized)
             
+        print(doc_tokenized)
         list_words = self.list_words(doc_tokenized)
         cij        = self.correlaction_matrix(doc_tokenized,list_words)
     
@@ -24,7 +25,7 @@ class core:
         
         miu_matrix=[]
         
-        for index , word in enumerate(list_words,start=0):
+        for index , word1 in enumerate(list_words,start=0):
         
             row=[]
             for doc in database:
@@ -180,7 +181,7 @@ class core:
 
 os.system("cls")
 
-docs = [ "A B C" , "A B" , "A X" , "A Q" , "D F" , "B X" ]
+docs = [ ["A B C"] , ["A B"] , ["A X"] , ["A Q"] , ["D F"] , ["B X"] ]
 
 cor=core(docs)
 
