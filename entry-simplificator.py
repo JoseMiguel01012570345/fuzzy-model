@@ -2,15 +2,16 @@ import os
 
 class entry:
     
+    query_simplied=[]
     def __init__( self , query ):
 
         query_simplified = self.query_to_array(query)        
         query_simplified = self.init_parser(query_simplified)
-        bracket_location = self.bracket_checker(query_simplified)
+        query_parsed     = self.expression_parser(query_simplified)
         
-        
-        print(bracket_location)
-        
+        if query_parsed:
+            query_simplified = self.query_simplied
+            
         pass
     
     def query_to_array( self , query ):
@@ -19,7 +20,7 @@ class entry:
 
         # Regular expression pattern to split by spaces, "or", "and", "not"
 
-        pattern = r"(\(|\)|or|and|nor)"
+        pattern = r"(\(|\)|or|and|not)"
 
         # Split the string using the pattern
         result = re.split(pattern, query)
@@ -43,104 +44,66 @@ class entry:
             
         return query_array
     
-    def bracket_checker(self,query_array): # returns a bracket location array or false if there is missmatch
-       
-        bracket_open=0;
-        bracket_closed=0
-        bracket_location=[]
+    def expression_parser( self ,query_simplied):
         
+        stack=[]
+        for item in query_simplied:
+        
+            stack.append(item)
+            stack = self.production(stack)
+
+        try:
+            if len(stack) == 1 and stack[0] == "E" :
+                return True
+        except:
+            pass
+        
+        return False
+        
+    def production(self , stack ):
+        
+        new_query=self.production_engine(stack=stack)
+        
+        while new_query[1]:
+            new_query=self.production_engine(stack=new_query[0])
+        
+        return new_query[0]
+    
+    def production_engine( self , stack ):
+        
+        new_query=[]
+        
+        productions = ["EandE" , "EorE" , "notE" , "(E)" ]
+        
+        new_expression=False
         i=0
-        for token in range(len(query_array)):
-           
-            if query_array[token] == "(":
-               
-               bracket_open += 1
-               bracket_location.append(token)
+        while i < len(stack):
             
-            if query_array[token] == ")":
+            q=""
+            if i + 2 < len(stack):
+                q  += stack[i]
+                q  += stack[i+1]
+                q  += stack[i+2]
+            
+            q1=""
+            if i + 1 < len(stack):
+                q1 += stack[i]
+                q1  += stack[i+1]
+            
+            parsed = False
+            for p in productions:
                 
-                bracket_closed   += 1
-                bracket_location.append(token)
+                if p == q or q1 == p :
+                    new_query.append("E")
+                    i+=2
+                    parsed = True
+                    new_expression = True
+                    break
             
-            if bracket_closed > bracket_open:
-                return False
-         
-        if bracket_open != bracket_closed:
-            return False 
-       
-        return bracket_location
-
-    def expression_parser( self ,query_simplied , bracket_location ,i):
-        
-        s="( ( E ) or ( E ) ) and ( E )"
-        new_query
-        if bracket_location[i] < bracket_location[-i]:
-        
-            new_query = self.expression_parser( query_simplied , i + 1 )
-            
-        else: 
-            return ""
-        
-        s=""
-        
-        for element in query_simplied[bracket_location[i] + 1 : bracket_location[ i+1 ]]:
-            
-            s += query_simplied[element] 
-            
-        s += new_query
-        
-        if bracket_location[ i + 1 ] + 1 < len(query_simplied):
-        
-            for element in query_simplied [ bracket_location[i+1] + 1 : bracket_location[i+2] - 1 ]:
+            if not parsed:
+                new_query.append(stack[i])
                 
-
-                
-                        
-                
-                pass 
+            i+=1
         
-        else:
-            return ""
-                
+        return (new_query,new_expression)
         
-        return True
-    
-    def expression_production():
-        pass
-    
-    
-    
-    def check_syntaxis( self , query ):
-        
-        for i in range(len(query)):
-            
-            if  query[i] == "or" or query[i] == "and" : 
-                
-                try:
-                    
-                    query[i-1] == "E"
-                    
-                    if query [i+1] == "E":
-                        query[i]="E"                
-                    
-                    elif query[i+1] == "not" and query[i+2] == "E":                        
-                        query[i] = "E"    
-                            
-                except:
-                    return False
-            
-            if query[i] == "not" and  query[i+1] == "E" :
-
-                    query[i] = "E"    
-    
-        for item in query:
-            
-            if item != "E":
-                return False
-            
-        return query
-        
-
-os.system("cls")
-
-ent=entry("( ( machine learning and not malanga ) or python) and sistema" )
