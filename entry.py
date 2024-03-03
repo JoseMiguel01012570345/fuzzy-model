@@ -3,10 +3,18 @@ import os
 class entry:
     
     query_simplied=[]
+    number_variables = 0
+    query_array_variable=[]
+    
     def __init__( self , query ):
 
         query_simplified = self.query_to_array(query)        
-        query_simplified = self.init_parser(query_simplified)
+        result = self.init_parser(query_simplified)
+        
+        self.number_variables = result[2]
+        self.query_array_variable=result[1]
+        query_simplified=result[0]
+        
         query_parsed     = self.expression_parser(query_simplified)
         
         if query_parsed:
@@ -32,6 +40,8 @@ class entry:
     
     def init_parser(self , query_array ):
         
+        number_variables = 0
+        query_array_variable=[]
         for item in range(len(query_array)):
             
             if  query_array[item] != "not" and \
@@ -40,9 +50,13 @@ class entry:
                 query_array[item] != "("   and \
                 query_array[item] != ")":
             
-                    query_array[item] = "E"         
+                    query_array[item] = "E"
+                    query_array_variable.append("v" + item)
+                    number_variables  += 1
             
-        return query_array
+            query_array_variable.append(query_array[item])
+            
+        return (query_array , query_array_variable , number_variables)
     
     def expression_parser( self ,query_simplied):
         
