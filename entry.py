@@ -51,7 +51,7 @@ class entry:
                 query_array[item] != ")":
             
                     query_array[item] = "E"
-                    query_array_variable.append("v" + item)
+                    query_array_variable.append( "v" )
                     number_variables  += 1
             
             query_array_variable.append(query_array[item])
@@ -121,3 +121,5 @@ class entry:
         
         return (new_query,new_expression)
         
+query=" not not not  A "
+en=entry(query)

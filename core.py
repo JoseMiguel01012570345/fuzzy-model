@@ -184,4 +184,3 @@ os.system("cls")
 docs = [ ["A B C"] , ["A B"] , ["A X"] , ["A Q"] , ["D F"] , ["B X"] ]
 
 cor=core(docs)
-
