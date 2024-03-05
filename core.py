@@ -8,7 +8,7 @@ class core:
     list_words_database=[]
     database_hased = []
     
-    def __init__(self , docs):
+    def __init__(self , docs,titles):
         
         # _______________TOKENIZE DOCS________________________
         
@@ -28,20 +28,20 @@ class core:
         
         cij = self.correlaction_matrix(doc_tokenized,list_words  )
         
-        self.miu_matrix = self.miu(cij,list_words,doc_tokenized)
+        self.miu_matrix = self.miu(cij,list_words,doc_tokenized,titles)
         
         # _____________________________________________________
         
         pass
     
-    def miu( self , cij , list_words , database ):
+    def miu( self , cij , list_words , database , titles ):
         
         miu_matrix=[]
         
         for index , word1 in enumerate(list_words,start=0):
         
             row=[]
-            for doc in database:
+            for title,doc in enumerate(database,start=0):
                 
                 pi_miu=1
                 for index1 , word in enumerate(list_words,start=0):
@@ -52,7 +52,7 @@ class core:
 
                         pi_miu *= 1 - cij[index][index1][2]     
                 
-                myMiu = miu_word_doc( word1 , doc , (1 - pi_miu) )
+                myMiu = miu_word_doc( word1 , doc , (1 - pi_miu), titles[title] ) 
             
                 row.append( myMiu )            
             
@@ -209,9 +209,11 @@ class miu_word_doc:
     word = ""
     doc  = ""
     miu  = 0
+    title= ""
     
-    def __init__( self, word ,doc ,miu):
+    def __init__( self, word ,doc ,miu,title):
         
         self.word=word
         self.miu=miu
         self.doc=doc
+        self.title = title

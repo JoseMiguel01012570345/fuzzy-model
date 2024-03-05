@@ -28,7 +28,9 @@ class suggestion:
         
             doc_socored = self.miu_query_per_doc(list_query_words,matrix_docs,good_combinations,list_words)
 
-            print(doc_socored)
+            filtered_doc = self.filter_doc(doc_socored)
+            
+            self.print_doc(filtered_doc)
             
         else:
             
@@ -72,6 +74,9 @@ class suggestion:
 
         for combination in list_combinations:
             
+            print("combination:",combination)
+            print("query:",query)
+            
             new_query = self.remplace_values(query,combination)
             r = self.evaluate(query=new_query)
             
@@ -88,10 +93,10 @@ class suggestion:
         for variable in  query:
             
             if variable == "v":
-              
-              new_query.append(combination[num_variable])
-              
-              num_variable += 1
+                  
+                new_query.append(combination[num_variable])
+                
+                num_variable += 1
               
             else:
                 new_query.append(variable)
@@ -299,7 +304,7 @@ class suggestion:
             
             for doc in miu_ki:
             
-                miu_kij.append([doc.miu,doc.doc])
+                miu_kij.append([doc.miu,doc.title])
             
             list_ki_miu_kij.append(miu_kij)
         
@@ -327,10 +332,24 @@ class suggestion:
         
         return sorted(doc_scored,key=lambda x : x[0])
     
-    def filter_doc(self):
+    def filter_doc(self, ranked_docs):
         
-        pass
+        filtered_docs=[]
+        for scored_doc in ranked_docs:
+            
+            doc = scored_doc
+            filtered_docs.append(doc)
+        
+        return filtered_docs
     
+    def print_doc( self , docs):
+        
+        docs = docs[::-1]
+        for index,doc in enumerate(docs,start=0):
+            
+            print(f"_______________________________DOCUEMNT {index}_______________________________")
+            print(doc)
+
     def query_word_index_in_database( self , list_words , list_query_words ):
         
         list_index_per_word = []

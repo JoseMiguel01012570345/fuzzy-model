@@ -15,11 +15,15 @@ dataset = ir_datasets.load("antique")
 # ---------------------------------------loading database--->>>
 
 documents=[]
+titles = []
 try:
     
     for doc in dataset.docs_iter():
         
-        with open('./database/'+ snippet.snippet(doc[1]) , 'w') as f:
+        title = snippet.snippet(doc[1])
+        titles.append(title)  
+        
+        with open('./database/'+ title , 'w') as f:
             f.write(doc[1])
             documents.append(doc[1])
         
@@ -41,14 +45,16 @@ for query in dataset.queries_iter():
 # ___________________________________________________________________________________
 
 os.system("cls")
-myCore = core.core(documents)
+myCore = core.core(documents , titles)
 
-query = "life and money"
+query = "small or tempting"
+
 while True:
     
     myEntry = entry.entry(query)
     
     suggested_docs = suggestion.suggestion( myEntry , myCore )
 
+    #os.system("cls")
     print("input your query: ")
     query = input()

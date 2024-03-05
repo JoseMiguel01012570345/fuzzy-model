@@ -7,12 +7,12 @@ class Tok:
     doc_tokenized = []
     doc_hashed_tokenized = []
     
-    def __init__(self , text = " " ):
+    def __init__(self , text = " " , title = "" ):
         
         self.doc_tokenized=self.tokenization_spacy( text)
         self.doc_tokenized=self.remove_noise_spacy( self.doc_tokenized )
         self.doc_tokenized = self.remove_stopwords_spacy(self.doc_tokenized)
-         
+        
         pass
 
     def tokenization_spacy(self , texts):
@@ -59,5 +59,5 @@ class Tok:
                     hash_value = hash(token)
                     result.append((hash_value,token))
 
-        return sorted(result, key=lambda x: x[0])
+        return (sorted(result, key=lambda x: x[0]))
     
