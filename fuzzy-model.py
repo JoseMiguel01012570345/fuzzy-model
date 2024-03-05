@@ -43,10 +43,11 @@ for query in dataset.queries_iter():
 os.system("cls")
 myCore = core.core(documents)
 
-query = "hello world cuba mama"
+query = "life and money"
 while True:
     
     myEntry = entry.entry(query)
+    
     suggested_docs = suggestion.suggestion( myEntry , myCore )
 
     print("input your query: ")

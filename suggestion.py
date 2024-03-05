@@ -8,13 +8,13 @@ class suggestion:
     
     def __init__( self, query: entry.entry, miu_matrix: core.core):   
         
-        print(query.query_simplied)
-        
         list_words = miu_matrix.list_words_database # list of the words in database
         
         numb_variables = query.number_variables # number of variable
         
         query_simplied = query.query_simplied # query simplied
+        
+        query_v =query.query_v
         
         matrix_docs = miu_matrix.miu_matrix # miu matrix for searching
         
@@ -22,7 +22,7 @@ class suggestion:
         
             list_combinations =  self.combinations(numb_variables,[]) # all combinations for the query
             
-            good_combinations =  self.evaluate_expresion(query_simplied,list_combinations) # combinations that results in 1
+            good_combinations =  self.evaluate_expresion(query_v,list_combinations) # combinations that results in 1
             
             list_query_words =   self.list_query_words(query_simplied)
         
@@ -33,7 +33,7 @@ class suggestion:
         else:
             
             # code for the min-max effort
-        
+
             pass
         
         
@@ -139,7 +139,6 @@ class suggestion:
         result=0
         i = 0
         evaluated = False
-        print
         stack=[expression[0]]
         pointer=0
         
@@ -280,10 +279,8 @@ class suggestion:
         
         for word in query_simplied:
             
-            for kw in keyword:
-                
-                if word != kw:
-                    list_words_query.append(word)            
+            if word not in keyword:
+                list_words_query.append(word)
                     
         return list_words_query
         
@@ -314,7 +311,7 @@ class suggestion:
             for combination in good_combinations: 
                 
                 result=1
-                for j in range(len(list_query_words)):
+                for j in range(len(list_index_per_query_word)):
                     
                     doc = list_ki_miu_kij[j][i][1]
                     if combination[j] == 1:
@@ -328,14 +325,30 @@ class suggestion:
             
             doc_scored.append([ doc_score , doc ])
         
-        return doc_scored
+        return sorted(doc_scored,key=lambda x : x[0])
+    
+    def filter_doc(self):
+        
+        pass
     
     def query_word_index_in_database( self , list_words , list_query_words ):
         
         list_index_per_word = []
         for query_word in list_query_words:
             
-            index = list(list_words).index(query_word)
-            list_index_per_word.append( index )
+            index = self.search_word_in_database(list_words,query_word)
+            
+            if index != "NaN":
+                
+                list_index_per_word.append( index )
         
         return list_index_per_word
+    
+    def search_word_in_database( self , list_word , target):
+        
+        for index,word in enumerate(list_word,start=0):
+            
+            if word[1] == target:
+                return index
+        
+        return "NaN"

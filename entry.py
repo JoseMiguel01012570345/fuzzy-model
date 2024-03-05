@@ -4,62 +4,59 @@ class entry:
     
     query_simplied=[]
     number_variables = 0
-    query_array_variable=[]
+    query_v=[]
     
     def __init__( self , query ):
 
         query_simplified = self.query_to_array(query)        
-        print("query_simplified:",query_simplified)
         result = self.init_parser(query_simplified)
         
+        query_E=result[0]
+        self.query_v=result[1]
         self.number_variables = result[2]
-        self.query_array_variable=result[1]
-        query_simplified=result[0]
         
-        query_parsed     = self.expression_parser(query_simplified)
+        query_parsed     = self.expression_parser(query_E)
         
         if query_parsed:
-            query_simplified = self.query_simplied
+            self.query_simplied = query_simplified
             
         pass
     
     def query_to_array( self , query ):
         
         import re
-
-        # Regular expression pattern to split by spaces, "or", "and", "not"
         
         # Split the string using the pattern
         result = re.split(" ", query)
         
         # Remove empty strings from the result (if any)
-
         result = [word for word in result if word != " " and word != "" ]
-        
+
         result2=[]
         keyword=["(",")","or","and","not", " ",""]
         
         if result[0] in keyword:
-        
             add_and = True
         else:
             add_and = False
         
-        for i , item in enumerate(result,start=0):
+        for item in result:
             
+            is_kw=False
             for kw in keyword:
                 
                 if kw == item:
                     
                     result2.append(item)
                     add_and = False
+                    is_kw =True
                 
             if add_and:
                 
                 result2.append("and")
                 result2.append(item)
 
-            else:
+            elif not is_kw :
                 add_and = True
                 result2.append(item)
                 
@@ -68,7 +65,8 @@ class entry:
     def init_parser(self , query_array ):
         
         number_variables = 0
-        query_array_variable=[]
+        query_v = []
+        query_E = []
         for item in range(len(query_array)):
             
             if  query_array[item] != "not" and \
@@ -77,13 +75,15 @@ class entry:
                 query_array[item] != "("   and \
                 query_array[item] != ")":
             
-                    query_array[item] = "E"
-                    query_array_variable.append( "v" )
+                    query_E.append( "E" )
+                    query_v.append( "v" )
                     number_variables  += 1
+                    continue
             
-            query_array_variable.append(query_array[item])
+            query_v.append(query_array[item])
+            query_E.append(query_array[item])
             
-        return (query_array , query_array_variable , number_variables)
+        return (query_E , query_v , number_variables)
     
     def expression_parser( self ,query_simplied):
         
