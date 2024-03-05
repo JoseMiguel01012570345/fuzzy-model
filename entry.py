@@ -1,5 +1,5 @@
 import os
-
+    
 class entry:
     
     query_simplied=[]
@@ -9,6 +9,7 @@ class entry:
     def __init__( self , query ):
 
         query_simplified = self.query_to_array(query)        
+        print("query_simplified:",query_simplified)
         result = self.init_parser(query_simplified)
         
         self.number_variables = result[2]
@@ -27,16 +28,42 @@ class entry:
         import re
 
         # Regular expression pattern to split by spaces, "or", "and", "not"
-
-        pattern = r"(\(|\)|or|and|not)"
-
+        
         # Split the string using the pattern
-        result = re.split(pattern, query)
-
+        result = re.split(" ", query)
+        
         # Remove empty strings from the result (if any)
-        result = [word for word in result if word != " " and word != "" ]
 
-        return result
+        result = [word for word in result if word != " " and word != "" ]
+        
+        result2=[]
+        keyword=["(",")","or","and","not", " ",""]
+        
+        if result[0] in keyword:
+        
+            add_and = True
+        else:
+            add_and = False
+        
+        for i , item in enumerate(result,start=0):
+            
+            for kw in keyword:
+                
+                if kw == item:
+                    
+                    result2.append(item)
+                    add_and = False
+                
+            if add_and:
+                
+                result2.append("and")
+                result2.append(item)
+
+            else:
+                add_and = True
+                result2.append(item)
+                
+        return result2
     
     def init_parser(self , query_array ):
         
@@ -120,6 +147,3 @@ class entry:
             i+=1
         
         return (new_query,new_expression)
-        
-query=" not not not  A "
-en=entry(query)

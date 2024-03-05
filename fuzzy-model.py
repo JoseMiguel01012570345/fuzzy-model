@@ -1,12 +1,14 @@
-from fuzzywuzzy import fuzz
 import os
 import ir_datasets
 import snippet_extraction as snippet
-import tok as token
+import core
+import entry
+import suggestion
 
-os.system("pip install spacy")
-os.system("python -m spacy download en_core_web_sm")
-os.system("pip install nlp")
+# os.system("pip install spacy")
+# os.system("python -m spacy download en_core_web_sm")
+# os.system("pip install nlp")
+# os.system("cls")
 
 dataset = ir_datasets.load("antique")
 
@@ -37,3 +39,15 @@ for query in dataset.queries_iter():
             query_test.append(query[1])  
 
 # ___________________________________________________________________________________
+
+os.system("cls")
+myCore = core.core(documents)
+
+query = "hello world cuba mama"
+while True:
+    
+    myEntry = entry.entry(query)
+    suggested_docs = suggestion.suggestion( myEntry , myCore )
+
+    print("input your query: ")
+    query = input()

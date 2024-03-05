@@ -1,24 +1,45 @@
-#import core
+import core
 import os
-#import entry
+import entry
 class suggestion:
     
     miu_query_per_doc=[]
     list_combination = []
     
-    #    def __init__( self, query: entry.entry = None , miu_matrix: core.core = None):   
-    def __init__( self):
+    def __init__( self, query: entry.entry, miu_matrix: core.core):   
         
-        myQ = [ "not" , "v" , "and" , "(", "v" , "or" ,"(" , "v" ,"and" ,"v" ,")" , ")" ]
+        print(query.query_simplied)
         
-        self.combinations( 4 , [] )
+        list_words = miu_matrix.list_words_database # list of the words in database
         
-        result = self.evaluate_expresion( myQ , self.list_combination)
+        numb_variables = query.number_variables # number of variable
         
-        print( result )
+        query_simplied = query.query_simplied # query simplied
+        
+        matrix_docs = miu_matrix.miu_matrix # miu matrix for searching
+        
+        if numb_variables <= 23: # more than 23 variables takes more than a second for a model to answer
+        
+            list_combinations =  self.combinations(numb_variables,[]) # all combinations for the query
+            
+            good_combinations =  self.evaluate_expresion(query_simplied,list_combinations) # combinations that results in 1
+            
+            list_query_words =   self.list_query_words(query_simplied)
+        
+            doc_socored = self.miu_query_per_doc(list_query_words,matrix_docs,good_combinations,list_words)
+
+            print(doc_socored)
+            
+        else:
+            
+            # code for the min-max effort
+        
+            pass
         
         
         pass
+    
+    # ______________________________Query_Evaluation______________________
     
     def combinations( self , num: int , combination: list ):
             
@@ -118,6 +139,7 @@ class suggestion:
         result=0
         i = 0
         evaluated = False
+        print
         stack=[expression[0]]
         pointer=0
         
@@ -227,8 +249,93 @@ class suggestion:
         else:
             
             return ( not result , num_not )
-        
     
-os.system("cls")
+    def query_word( self , query_simplied):
+        
+        keywords=["or","and","not","(",")"]
+        list_query_words=[]
+        
+        for item in query_simplied:
+            
+            memebership = True
+            
+            for kw in keywords:
+                
+                if kw == item:
+                    
+                    memebership = False
+                    break        
+            
+            if memebership:
+                list_query_words.append(item)        
+              
+        return list_query_words
+    
+    #____________________________________________________________________
+    
+    def list_query_words( self , query_simplied:list ):
+        
+        keyword=["(",")","or","and","not", " ",""]
+        list_words_query = []
+        
+        for word in query_simplied:
+            
+            for kw in keyword:
+                
+                if word != kw:
+                    list_words_query.append(word)            
+                    
+        return list_words_query
+        
+    def miu_query_per_doc(self , list_query_words: entry.entry.query_simplied , matrix_doc: core.core.miu_matrix , good_combinations ,list_words ):
+        
+        list_index_per_query_word = self.query_word_index_in_database(list_words,list_query_words)
+        
+        list_ki_miu_kij=[]
+        num_docs=0
+        for index in list_index_per_query_word: # pick all miu_ij such that i is the query term and j is the document
+            
+            miu_ki = matrix_doc[index]
+            num_docs= len(miu_ki)
+            
+            miu_kij=[]
+            
+            for doc in miu_ki:
+            
+                miu_kij.append([doc.miu,doc.doc])
+            
+            list_ki_miu_kij.append(miu_kij)
+        
+        doc_scored=[]
+        for i in range(num_docs): # score all documents
+            
+            miu_qj=1
+            doc=""
+            for combination in good_combinations: 
+                
+                result=1
+                for j in range(len(list_query_words)):
+                    
+                    doc = list_ki_miu_kij[j][i][1]
+                    if combination[j] == 1:
+                        result *= list_ki_miu_kij[j][i][0]
+                    else:
+                        result *= 1 - list_ki_miu_kij[j][i][0]
 
-suggest = suggestion()
+                miu_qj *= 1 - result
+            
+            doc_score = 1 - miu_qj
+            
+            doc_scored.append([ doc_score , doc ])
+        
+        return doc_scored
+    
+    def query_word_index_in_database( self , list_words , list_query_words ):
+        
+        list_index_per_word = []
+        for query_word in list_query_words:
+            
+            index = list(list_words).index(query_word)
+            list_index_per_word.append( index )
+        
+        return list_index_per_word
