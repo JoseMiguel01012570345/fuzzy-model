@@ -1,5 +1,11 @@
 # <- Modelo booleano difuso ->
 
+### Autores:
+#
+* Yonatan Jose Guerras C411
+* Jose Miguel Perez Perez C411
+
+#
 
 El `modelo booleano difuso` es un enfoque que se utiliza en la `lógica difusa` y la `inteligencia artificial` para manejar la incertidumbre y la ambigüedad en la toma de decisiones. A diferencia de la `lógica booleana tradicional`, que solo permite valores de verdad (verdadero o falso), el modelo booleano difuso permite grados de verdad que pueden variar entre 0 y 1. Esto permite representar la incertidumbre y la ambigüedad de manera más precisa . Aunque retorna documentos mas precisos con respecto a la `query` del usuario , requiere mas cómputo para generar la base de datos correspondiente por lo que requiere mejor gestion de memoria y de los recursos en general
 
@@ -18,3 +24,9 @@ El script `entry.py` somete a la query a un parser para estar seguros que la que
 `nota:` Los `parentésis` en la query deben estar separados por espacios , en caso contrario el parser no permitirá dicha `query`
 
 Luego esta el script `suggestion.py` que se encarga de determinar los documentos para la sugerencia de los mismos.
+
+
+
+## Deficiencias
+
+A este modelo le falto implementar el modelo estandar difuso de procesamiento de la query dado que no es capaz de calcular mas de 23 términos en una query
